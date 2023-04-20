@@ -1,0 +1,50 @@
+# This file is referenced from: https://help.aliyun.com/document_detail/337825.html?spm=a2c4g.337824.0.0.620b784aoRsfNf
+edition: 1.0.0
+name: feishu-new_bing_bot
+access: "default"
+
+vars:
+  region: "ap-southeast-1"
+
+services:
+  chat_bot:
+    component: fc
+    actions:
+      pre-deploy:
+        - run: pip3 install -r requirements.txt -t depends/
+          path: ./code
+    props:
+      region: ${vars.region}
+      service:
+        name: "feishu-new_bing_bot"
+        description: "Serverless Devs Website Service"
+      function:
+        name: "chatbot"
+        description: "A simple feishubot by serverless devs"
+        codeUri: "./code"
+        cAPort: 9000
+        environmentVariables:
+          PYTHONPATH: "${env:PYTHONPATH}:/code/depends/"
+        handler: index.app
+        instanceConcurrency: 20
+        instanceType: e1
+        memorySize: 128
+        timeout: 120
+        runtime: python3.9
+        internetAccess: true
+      triggers:
+        - name: httpTrigger
+          type: http
+          config:
+            authType: anonymous
+            methods:
+              - GET
+              - POST
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: /*
+              methods:
+                - GET
+                - POST

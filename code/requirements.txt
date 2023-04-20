@@ -1,0 +1,5 @@
+pycryptodome
+flask
+larksuite-oapi
+EdgeGPT
+pyyaml

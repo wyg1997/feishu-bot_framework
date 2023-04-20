@@ -1,0 +1,3 @@
+code/depends/*
+.s/
+__pycache__/

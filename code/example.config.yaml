@@ -1,0 +1,15 @@
+#  飞书  # 不要随意修改example中配置的顺序和空格，否则docker的sed脚本会执行出错
+APP_ID: app_id
+APP_SECRET: app_secret
+APP_ENCRYPT_KEY: app_encrypt_key
+APP_VERIFICATION_TOKEN: app_verification_token
+# 请确保和飞书应用管理平台中的设置一致
+BOT_NAME: new_bing
+# 服务器配置
+HTTP_PORT: 9000
+HTTPS_PORT: 9001
+USE_HTTPS: false
+CERT_FILE: cert.pem
+KEY_FILE: key.pem
+# 代理设置, 例如 "http://127.0.0.1:7890", ""代表不使用代理
+HTTP_PROXY: ""
