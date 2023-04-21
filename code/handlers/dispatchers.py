@@ -1,7 +1,7 @@
 from larksuiteoapi.service.im.v1 import MessageReceiveEventHandler
 
-from core.data_structure import parse_msg_info
-from core.data_structure import HandlerType, MessageType
+from core.data_structure import HandlerType, MessageType, parse_msg_info
+from core.config import sdk_config
 from handlers.register import msg_handle_register
 
 
@@ -22,4 +22,4 @@ def message_receive_event_dispatcher(ctx, conf, event):
         return msg_handle_register.get("/default", force=True)(msg_info)
 
 
-MessageReceiveEventHandler.set_callback(conf, message_receive_event_dispatcher)
+MessageReceiveEventHandler.set_callback(sdk_config, message_receive_event_dispatcher)
