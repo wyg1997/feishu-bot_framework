@@ -43,6 +43,7 @@ from larksuiteoapi import (
 )
 
 from core.config import sdk_config
+from handlers.dispatchers import message_receive_event_dispatcher
 
 
 app = Flask(__name__)
@@ -118,6 +119,8 @@ app = Flask(__name__)
 
 
 #  MessageReceiveEventHandler.set_callback(conf, message_receive_callback)
+
+MessageReceiveEventHandler.set_callback(sdk_config, message_receive_event_dispatcher)
 
 
 @app.route("/webhook/event", methods=["GET", "POST"])

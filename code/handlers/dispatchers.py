@@ -9,11 +9,11 @@ def message_receive_event_dispatcher(ctx, conf, event):
     msg_info = parse_msg_info(event)
 
     # Ignore message from group and not mentioned bot
-    if msg_info.handler_type == HandlerType.kGroup and not msg_info.is_mentioned:
+    if msg_info.handler_type == HandlerType.group and not msg_info.is_mentioned:
         return None
 
     # TODO: support the message which is not text
-    if msg_info.msg_type != MessageType.kText:
+    if msg_info.msg_type != MessageType.text:
         return None
 
     if msg_info.text in msg_handle_register:
