@@ -10,7 +10,7 @@ from core.config import sdk_config, service
 @msg_handle_register.register_handle(keys=["/help", "/start", "帮助"])
 def helper_handle(msg_info: MsgInfo):
     body = model.MessageReplyReqBody()
-    body.content = '{"text": "Hellow world!"}'
+    body.content = '{"text": "Hello world!"}'
     body.msg_type = MessageType.text.name
 
     req_call = service.messages.reply(body)
