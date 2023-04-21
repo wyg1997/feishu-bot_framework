@@ -1,6 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass
 from core.config import global_config
+from core.tools import parse_message_content
 from typing import List
 
 from larksuiteoapi.service.im.v1.model import MentionEvent
@@ -50,14 +51,13 @@ def parse_msg_info(event):
     """
     Parse message info from event.
     """
-    print(event)
     return MsgInfo(
         handler_type=HandlerType[event.event.message.chat_type],
         msg_type=MessageType[event.event.message.message_type],
         msg_id=event.event.message.message_id,
         chat_id=event.event.message.chat_id,
-        text=event.event.message.content.text.strip(),
+        text=parse_message_content(event.event.message.content),
         is_mentioned=_is_mentioned(
-            event.event.message.mentions, global_config["bot_name"]
+            event.event.message.mentions, global_config["BOT_NAME"]
         ),
     )
