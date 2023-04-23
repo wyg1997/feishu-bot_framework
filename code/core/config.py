@@ -2,6 +2,7 @@ import yaml
 import logging
 
 from larksuiteoapi import Config, DOMAIN_FEISHU, DefaultLogger, LEVEL_DEBUG
+from larksuiteoapi.service.im.v1 import Service as ImService
 
 
 def load_global_config(path):
@@ -29,3 +30,4 @@ def _get_sdk_config():
 
 
 sdk_config = _get_sdk_config()
+service = ImService(sdk_config)

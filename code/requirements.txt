@@ -3,3 +3,4 @@ flask
 larksuite-oapi
 EdgeGPT
 pyyaml
+regex
