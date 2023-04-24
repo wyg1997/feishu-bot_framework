@@ -14,7 +14,9 @@ services:
     actions:
       pre-deploy:
         - run: docker pull aliyunfc/runtime-python3.9:1.10.8
-        - run: docker run --platform linux/amd64 --rm -v $(pwd):/python registry.cn-beijing.aliyuncs.com/aliyunfc/runtime-python3.9:build-1.10.8 sh -c "pip install -r /python/requirements.txt -t /python/depends"
+        - run: docker run --platform linux/amd64 --rm -v $(pwd):/code
+            registry.cn-beijing.aliyuncs.com/aliyunfc/runtime-python3.9:build-1.10.8
+            sh -c '[ "$(ls -A /code/depends 2>/dev/null)" ] && echo "Dependence has been installed, skip..." ||  pip install -r /code/requirements.txt -t /code/depends --ignore-installed'
           path: ./code
     props:
       region: ${vars.region}

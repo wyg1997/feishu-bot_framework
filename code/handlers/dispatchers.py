@@ -5,7 +5,9 @@ from core.config import sdk_config
 from handlers.register import msg_handle_register
 
 
-def message_receive_event_dispatcher(ctx, conf, event):
+def message_receive_event_dispatcher(
+    ctx, conf, event
+):  # pylint: disable=unused-argument
     msg_info = parse_msg_info(event)
 
     # Ignore message from group and not mentioned bot
