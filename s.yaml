@@ -3,6 +3,8 @@ edition: 1.0.0
 name: feishu-new_bing_bot
 access: "default"
 
+# 可以填自己喜欢的服务器位置:
+# https://help.aliyun.com/document_detail/140601.html?spm=a2c4g.43984.0.i4
 vars:
   region: "ap-southeast-1"
 
@@ -11,7 +13,10 @@ services:
     component: fc
     actions:
       pre-deploy:
-        - run: pip3 install -r requirements.txt -t depends/
+        - run: docker pull aliyunfc/runtime-python3.9:1.10.8
+        - run: docker run --platform linux/amd64 --rm -v $(pwd):/code
+            registry.cn-beijing.aliyuncs.com/aliyunfc/runtime-python3.9:build-1.10.8
+            sh -c '[ "$(ls -A /code/depends 2>/dev/null)" ] && echo "Dependence has been installed, skip..." ||  pip install -r /code/requirements.txt -t /code/depends --ignore-installed'
           path: ./code
     props:
       region: ${vars.region}
@@ -20,7 +25,7 @@ services:
         description: "Serverless Devs Website Service"
       function:
         name: "chatbot"
-        description: "A simple feishubot by serverless devs"
+        description: "A simple feishu-bot by serverless devs"
         codeUri: "./code"
         cAPort: 9000
         environmentVariables:

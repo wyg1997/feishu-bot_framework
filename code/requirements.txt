@@ -1,6 +1,6 @@
-pycryptodome
-flask
-larksuite-oapi
-EdgeGPT
-pyyaml
-regex
+pycryptodome==3.17
+Flask==2.2.3
+larksuite-oapi==1.0.34
+EdgeGPT==0.2.1
+PyYAML==6.0
+regex==2023.3.23
