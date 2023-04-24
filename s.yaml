@@ -13,6 +13,7 @@ services:
     component: fc
     actions:
       pre-deploy:
+        - run: docker pull aliyunfc/runtime-python3.9:1.10.8
         - run: docker run --platform linux/amd64 --rm -v $(pwd):/python registry.cn-beijing.aliyuncs.com/aliyunfc/runtime-python3.9:build-1.10.8 sh -c "pip install -r /python/requirements.txt -t /python/depends"
           path: ./code
     props:
