@@ -1,3 +1,4 @@
+import os
 import yaml
 import logging
 
@@ -6,8 +7,16 @@ from larksuiteoapi.service.im.v1 import Service as ImService
 
 
 def load_global_config(path):
-    with open(path, "r") as f:
-        config = yaml.safe_load(f)
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            config = yaml.safe_load(f)
+    else:
+        config = dict()
+        config["APP_ID"] = os.environ.get('APP_ID')
+        config["APP_SECRET"] = os.environ.get("APP_SECRET")
+        config["APP_VERIFICATION_TOKEN"] = os.environ.get("APP_VERIFICATION_TOKEN")
+        config["APP_ENCRYPT_KEY"] = os.environ.get("APP_ENCRYPT_KEY")
+
     return config
 
 
