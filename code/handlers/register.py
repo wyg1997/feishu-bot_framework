@@ -12,7 +12,7 @@ class Register(object):
         return len(self._handle_dict)
 
     def __contains__(self, key):
-        return self.get(key) is not None
+        return self.get(key, force=False) is not None
 
     def __repr__(self):
         repr_str = f"{self.name} [\n"

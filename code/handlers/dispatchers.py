@@ -2,6 +2,7 @@ from larksuiteoapi.service.im.v1 import MessageReceiveEventHandler
 
 from core.data_structure import HandlerType, MessageType, parse_msg_info
 from core.config import sdk_config
+from core.service import reply_message
 from handlers.register import msg_handle_register
 
 
@@ -18,10 +19,13 @@ def message_receive_event_dispatcher(
     if msg_info.msg_type != MessageType.text:
         return None
 
-    if msg_info.text in msg_handle_register:
-        return msg_handle_register.get(msg_info.text, force=True)(msg_info)
-    else:
-        return msg_handle_register.get("/default", force=True)(msg_info)
+    try:
+        if msg_info.text in msg_handle_register:
+            return msg_handle_register.get(msg_info.text, force=True)(msg_info)
+        else:
+            return msg_handle_register.get("/default", force=True)(msg_info)
+    except Exception as e:
+        return reply_message(msg_info, "{" + f'"text": "出错啦: str(e)"' + "}")
 
 
 MessageReceiveEventHandler.set_callback(sdk_config, message_receive_event_dispatcher)
