@@ -7,6 +7,11 @@ from typing import List
 from larksuiteoapi.service.im.v1.model import MentionEvent
 
 
+class ActionType(Enum):
+    chat = 1
+    image = 2
+
+
 class HandlerType(Enum):
     user = 1
     group = 2
