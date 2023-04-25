@@ -1,4 +1,5 @@
 import logging
+import json
 from larksuiteoapi.service.im.v1 import model
 
 from core.data_structure import MsgInfo, MessageType
@@ -6,8 +7,7 @@ from core.config import service
 
 
 def reply_message(msg_info: MsgInfo, **content_dict):
-    dict_str = ",".join([f'"{k}":"{v}"' for k, v in content_dict.items()])
-    content = "{" + dict_str + "}"
+    content = json.dumps(content_dict)
 
     body = model.MessageReplyReqBody()
     body.content = content

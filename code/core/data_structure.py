@@ -13,7 +13,7 @@ class ActionType(Enum):
 
 
 class HandlerType(Enum):
-    user = 1
+    p2p = 1
     group = 2
 
 
