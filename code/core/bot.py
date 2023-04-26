@@ -97,12 +97,21 @@ class BotPool(object):
         else:
             bot.image_gen(msg_info)
 
+    def try_free_bots(self):
+        # TODO: free bots which are timeout
+        for i in range(self.bot_count):
+            bot = self.bots[i]
+            if bot is None:
+                del bot
+            self.bots[i] = None
+
     def _create_bot(self, chat_id):
         assert (
             chat_id not in self.chat_id2bot_idx
         ), f"chat_id: {chat_id} already in pool"
         for i in range(self.bot_count):
             if self.bots[i] is None:
+                # TODO: read cookie path from config
                 self.bots[i] = Bot("cookies.json")
                 self.chat_id2bot_idx[chat_id] = i
                 return self.bots[i]
@@ -113,14 +122,6 @@ class BotPool(object):
                 self.chat_id2bot_idx[chat_id] = i
                 return self.bots[i]
         raise RuntimeError("Don't have enough space to create new bot")
-
-    def try_free_bots(self):
-        # TODO: free bots which are timeout
-        for i in range(self.bot_count):
-            bot = self.bots[i]
-            if bot is None:
-                del bot
-            self.bots[i] = None
 
 
 # TODO: load bot count from config
