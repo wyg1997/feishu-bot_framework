@@ -3,3 +3,4 @@ code/depends/*
 __pycache__/
 .DS_Store
 code/config.yaml
+cookies.json

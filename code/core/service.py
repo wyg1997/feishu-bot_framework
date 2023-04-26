@@ -1,11 +1,14 @@
 import logging
+import json
 from larksuiteoapi.service.im.v1 import model
 
 from core.data_structure import MsgInfo, MessageType
 from core.config import service
 
 
-def reply_message(msg_info: MsgInfo, content: str):
+def reply_message(msg_info: MsgInfo, **content_dict):
+    content = json.dumps(content_dict)
+
     body = model.MessageReplyReqBody()
     body.content = content
     body.msg_type = MessageType.text.name

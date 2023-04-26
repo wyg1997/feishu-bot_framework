@@ -25,7 +25,7 @@ def message_receive_event_dispatcher(
         else:
             return msg_handle_register.get("/default", force=True)(msg_info)
     except Exception as e:
-        return reply_message(msg_info, "{" + f'"text": "出错啦: str(e)"' + "}")
+        return reply_message(msg_info, text=f"出错啦: {str(e)}")
 
 
 MessageReceiveEventHandler.set_callback(sdk_config, message_receive_event_dispatcher)
