@@ -103,14 +103,16 @@ class BotPool(object):
             bot.chat(msg_info)
         else:
             bot.image_gen(msg_info)
+        logging.info(f"Bot pool current size: {sum(x is not None for x in self.bots)}")
 
     def try_free_bots(self):
         # TODO: free bots which are timeout
         for i in range(self.bot_count):
             bot = self.bots[i]
-            if bot is None:
+            if bot is not None:
+                self.bots[i] = None
                 del bot
-            self.bots[i] = None
+        self.chat_id2bot_idx = {}
 
     def _create_bot(self, chat_id):
         assert (
