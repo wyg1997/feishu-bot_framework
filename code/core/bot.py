@@ -10,6 +10,7 @@ from ImageGen import ImageGen
 
 from core.data_structure import MsgInfo, ActionType
 from core.service import reply_message
+from core.card_builder import CardBuilder, CardTemplate
 
 
 class Bot(object):
@@ -36,8 +37,14 @@ class Bot(object):
         self._update_timestamp()
         bot = self._get_chat_bot()
         reply = asyncio.run(bot.ask(msg_info.text))
+
+        # reply message
         logging.info(f"chat reply: {reply}")
-        reply_message(msg_info, text=reply["item"]["messages"][-1]["text"])
+        card_builder = CardBuilder().add_markdown(reply["item"]["messages"][-1]["text"])
+        # first message, add header
+        if len(self.message_ids) == 1:
+            card_builder.add_header(CardTemplate.wathet, "🥳 新话题已创建，进入卡片可连续对话")
+        reply_message(msg_info, text=card_builder.build())
 
     def image_gen(self, msg_info: MsgInfo):
         raise NotImplementedError("image gen not implemented yet")
