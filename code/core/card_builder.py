@@ -32,6 +32,7 @@ class CardBuilder:
         Document:
             https://open.feishu.cn/document/ukTMukTMukTM/ukTNwUjL5UDM14SO1ATN
         """
+        assert "header" not in self.card, "header already exists"
         if isinstance(template, CardTemplate):
             template = template.name
         self.card["header"] = {
