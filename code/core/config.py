@@ -16,6 +16,10 @@ def load_global_config(path):
         config["APP_SECRET"] = os.environ.get("APP_SECRET")
         config["APP_VERIFICATION_TOKEN"] = os.environ.get("APP_VERIFICATION_TOKEN")
         config["APP_ENCRYPT_KEY"] = os.environ.get("APP_ENCRYPT_KEY")
+        # Note(liyurui): the bot name must equal to the bot name in feishu
+        config["BOT_NAME"] = os.environ.get("BOT_NAME", "")
+        config["CERT_FILE"] = "cert.pem"
+        config["KEY_FILE"] = "key.pem"
 
     return config
 
