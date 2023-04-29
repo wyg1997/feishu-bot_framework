@@ -1,4 +1,5 @@
-from flask import Flask, request
+import os
+from flask import Flask, request, jsonify
 from flask.helpers import make_response
 
 from larksuiteoapi.event import handle_event, set_event_callback
@@ -41,6 +42,11 @@ def card_handler():
     resp.status_code = oapi_resp.status_code
     return resp
 
+@app.route("/ping", methods=["GET"])
+def ping():
+    response = {"message": "pong"}
+    return jsonify(response)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=9000)
+    app.run(debug=True, port=os.getenv("PORT", default=9000))
+
