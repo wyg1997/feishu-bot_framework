@@ -44,7 +44,7 @@ class Bot(object):
         # first message, add header
         if len(self.message_ids) == 1:
             card_builder.add_header(CardTemplate.wathet, "🥳 新话题已创建，进入卡片可连续对话")
-        reply_message(msg_info, text=card_builder.build())
+        reply_message(msg_info, content=card_builder.build())
 
     def image_gen(self, msg_info: MsgInfo):
         raise NotImplementedError("image gen not implemented yet")

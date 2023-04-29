@@ -3,6 +3,7 @@ from larksuiteoapi.service.im.v1 import MessageReceiveEventHandler
 from core.data_structure import HandlerType, MessageType, parse_msg_info
 from core.config import sdk_config
 from core.service import reply_message
+from core.card_builder import CardBuilder, CardTemplate
 from handlers.register import msg_handle_register
 
 
@@ -25,7 +26,10 @@ def message_receive_event_dispatcher(
         else:
             return msg_handle_register.get("/default", force=True)(msg_info)
     except Exception as e:
-        return reply_message(msg_info, text=f"出错啦: {str(e)}")
+        card_builder = (
+            CardBuilder().add_markdown(str(e)).add_header(CardTemplate.red, "⛔️ 出错啦")
+        )
+        return reply_message(msg_info, content=card_builder.build())
 
 
 MessageReceiveEventHandler.set_callback(sdk_config, message_receive_event_dispatcher)
