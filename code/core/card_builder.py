@@ -109,4 +109,39 @@ class CardBuilder:
         )
         return self
 
+    def add_note(
+        self,
+        note_content,
+        *,
+        img_key="img_v2_041b28e3-5680-48c2-9af2-497ace79333g",
+        img_content="",
+    ):
+        """
+        Document:
+            https://open.feishu.cn/document/ukTMukTMukTM/ucjNwUjL3YDM14yN2ATN
+        """
+        if "elements" not in self.card:
+            self.card["elements"] = []
+
+        self.card["elements"].append(
+            {
+                "tag": "note",
+                "elements": [
+                    {
+                        "tag": "img",
+                        "img_key": img_key,
+                        "alt": {
+                            "tag": "plain_text",
+                            "content": img_content,
+                        },
+                    },
+                    {
+                        "tag": "plain_text",
+                        "content": note_content,
+                    },
+                ],
+            }
+        )
+        return self
+
     # TODO: add more elements
