@@ -4,12 +4,13 @@ from core.data_structure import HandlerType, MessageType, parse_msg_info
 from core.config import sdk_config
 from core.service import reply_message
 from core.card_builder import CardBuilder, CardTemplate
-from handlers.register import msg_handle_register
+from handlers import msg_handle_register
 
 
-def message_receive_event_dispatcher(
-    ctx, conf, event
-):  # pylint: disable=unused-argument
+_msg_cache = set()
+
+
+def message_receive_event_dispatcher(ctx, conf, event):
     msg_info = parse_msg_info(event)
 
     # Ignore message from group and not mentioned bot
@@ -20,11 +21,19 @@ def message_receive_event_dispatcher(
     if msg_info.msg_type != MessageType.text:
         return None
 
+    if msg_info.msg_id in _msg_cache:
+        return None
+
+    # avoid repeated message
+    if len(_msg_cache) > 1000:
+        _msg_cache.clear()
+    _msg_cache.add(msg_info.msg_id)
+
     try:
         if msg_info.text in msg_handle_register:
             return msg_handle_register.get(msg_info.text, force=True)(msg_info)
         else:
-            return msg_handle_register.get("/default", force=True)(msg_info)
+            return msg_handle_register.get("/chat", force=True)(msg_info)
     except Exception as e:
         card_builder = (
             CardBuilder().add_markdown(str(e)).add_header(CardTemplate.red, "⛔️ 出错啦")

@@ -10,6 +10,7 @@ from larksuiteoapi.service.im.v1.model import MentionEvent
 class ActionType(Enum):
     chat = 1
     image = 2
+    repeat = 3
 
 
 class HandlerType(Enum):
@@ -35,7 +36,7 @@ class MsgInfo(object):
     handler_type: HandlerType
     msg_type: MessageType
     msg_id: int
-    chat_id: int
+    root_id: int
     text: str
     is_mentioned: bool  # or all mentioned users name
     # TODO: add more properties
@@ -60,7 +61,7 @@ def parse_msg_info(event):
         handler_type=HandlerType[event.event.message.chat_type],
         msg_type=MessageType[event.event.message.message_type],
         msg_id=event.event.message.message_id,
-        chat_id=event.event.message.chat_id,
+        root_id=event.event.message.root_id or event.event.message.message_id,
         text=parse_message_content(event.event.message.content),
         is_mentioned=_is_mentioned(
             event.event.message.mentions, global_config["BOT_NAME"]
