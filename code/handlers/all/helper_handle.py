@@ -1,6 +1,6 @@
 import logging
 
-from handlers.register import msg_handle_register
+from handlers import msg_handle_register
 from core.data_structure import MsgInfo
 from core.service import reply_message
 from core.card_builder import CardBuilder, CardTemplate

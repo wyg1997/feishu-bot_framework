@@ -4,7 +4,7 @@ from core.service import reply_message
 from core.data_structure import MsgInfo, ActionType
 from core.bot import bot_pool, BotBase
 from core.card_builder import CardBuilder, CardTemplate
-from handlers.register import msg_handle_register, bot_register
+from handlers import msg_handle_register, bot_register
 
 
 @msg_handle_register.register_object(key=["/repeat", "复读机"])
@@ -13,7 +13,7 @@ def repeat_handle(msg_info: MsgInfo):
     bot_pool.ask(msg_info, ActionType.repeat)
 
 
-@bot_register.register_object(key=[ActionType.repeat])
+@bot_register.register_object(key=ActionType.repeat)
 class RepeatBot(BotBase):
     def _do(self, msg_info: MsgInfo):
         card_builder = CardBuilder()

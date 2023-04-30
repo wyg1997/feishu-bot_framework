@@ -36,10 +36,7 @@ class Register(object):
         return self._object_dict.get(key, None)
 
     def _register_object(self, obj, key, force=False):
-        assert isinstance(
-            key, (list, tuple, str)
-        ), f"keys must be list or tuple or str, but got {type(key)}"
-        if isinstance(key, str):
+        if not isinstance(key, (list, tuple)):
             key = [key]
 
         for key in key:
@@ -49,7 +46,7 @@ class Register(object):
 
     def register_object(self, key, force=False, obj=None):
         r"""
-        Register a handle function.
+        Register any object.
 
         For example::
 
@@ -74,7 +71,3 @@ class Register(object):
             return cls
 
         return _register_object_wrapper
-
-
-msg_handle_register = Register(name="message handle register")
-bot_register = Register(name="bot register")

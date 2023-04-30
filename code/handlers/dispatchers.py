@@ -4,7 +4,7 @@ from core.data_structure import HandlerType, MessageType, parse_msg_info
 from core.config import sdk_config
 from core.service import reply_message
 from core.card_builder import CardBuilder, CardTemplate
-from handlers.register import msg_handle_register
+from handlers import msg_handle_register
 
 
 _msg_cache = set()

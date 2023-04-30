@@ -4,7 +4,7 @@ import logging
 from abc import ABC, abstractmethod
 
 from core.data_structure import MsgInfo, ActionType
-from handlers.register import bot_register
+from handlers import bot_register
 
 
 class BotBase(ABC):
