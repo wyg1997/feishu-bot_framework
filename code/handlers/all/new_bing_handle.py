@@ -20,8 +20,8 @@ def new_bing_handle(msg_info: MsgInfo):
 
 @bot_register.register_object(key=[ActionType.chat])
 class ChatBot(BotBase):
-    def __init__(self, chat_id):
-        super().__init__(chat_id)
+    def __init__(self, root_id):
+        super().__init__(root_id)
         self._chat_bot = None
         self.cookie_path = "cookies.json"
 

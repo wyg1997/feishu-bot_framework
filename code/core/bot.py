@@ -8,17 +8,17 @@ from handlers import bot_register
 
 
 class BotBase(ABC):
-    def __init__(self, chat_id):
-        self._chat_id = chat_id
+    def __init__(self, root_id):
+        self._root_id = root_id
         self._timestamp = time.time()
         self._message_ids = set()
 
     def __del__(self):
-        logging.info(f"Bot {self.chat_id} is deleted")
+        logging.info(f"Bot {self.root_id} is deleted")
 
     @property
-    def chat_id(self):
-        return self.chat_id
+    def root_id(self):
+        return self.root_id
 
     @property
     def message_ids(self):
@@ -49,18 +49,18 @@ class BotPool(object):
         self.bots: List[Union[None, BotBase]] = [None] * bot_count
         self.chat_id2bot_idx = {}
 
-    def __contains__(self, chat_id):
-        return chat_id in self.chat_id2bot_idx
+    def __contains__(self, root_id):
+        return root_id in self.chat_id2bot_idx
 
-    def __getitem__(self, chat_id):
-        assert chat_id in self.chat_id2bot_idx, f"chat_id: {chat_id} not in pool"
-        return self.bots[self.chat_id2bot_idx[chat_id]]
+    def __getitem__(self, root_id):
+        assert root_id in self.chat_id2bot_idx, f"root_id: {root_id} not in pool"
+        return self.bots[self.chat_id2bot_idx[root_id]]
 
     def ask(self, msg_info: MsgInfo, action_type: ActionType):
-        if msg_info.chat_id not in self:
-            self._create_bot(msg_info.chat_id, action_type)
+        if msg_info.root_id not in self:
+            self._create_bot(msg_info.root_id, action_type)
 
-        bot = self[msg_info.chat_id]
+        bot = self[msg_info.root_id]
         assert bot is not None, "Unexpected error: bot is None"
 
         bot.do(msg_info)
@@ -75,17 +75,17 @@ class BotPool(object):
                 del bot
         self.chat_id2bot_idx = {}
 
-    def _create_bot(self, chat_id, action_type):
+    def _create_bot(self, root_id, action_type):
         assert (
-            chat_id not in self.chat_id2bot_idx
-        ), f"chat_id: {chat_id} already in pool"
+            root_id not in self.chat_id2bot_idx
+        ), f"root_id: {root_id} already in pool"
         if all(x is not None for x in self.bots):
             self.try_free_bots()
         for i in range(self.bot_count):
             if self.bots[i] is None:
                 # TODO: read cookie path from config
-                self.bots[i] = bot_register.get(action_type)(chat_id)
-                self.chat_id2bot_idx[chat_id] = i
+                self.bots[i] = bot_register.get(action_type)(root_id)
+                self.chat_id2bot_idx[root_id] = i
                 return self.bots[i]
         raise RuntimeError("Don't have enough space to create new bot")
 

@@ -7,7 +7,7 @@ from core.card_builder import CardBuilder, CardTemplate
 from handlers import msg_handle_register
 
 
-_chat_cache = set()
+_msg_cache = set()
 
 
 def message_receive_event_dispatcher(ctx, conf, event):
@@ -21,13 +21,13 @@ def message_receive_event_dispatcher(ctx, conf, event):
     if msg_info.msg_type != MessageType.text:
         return None
 
-    if msg_info.chat_id in _chat_cache:
+    if msg_info.msg_id in _msg_cache:
         return None
 
     # avoid repeated message
-    if len(_chat_cache) > 1000:
-        _chat_cache.clear()
-    _chat_cache.add(msg_info.chat_id)
+    if len(_msg_cache) > 1000:
+        _msg_cache.clear()
+    _msg_cache.add(msg_info.msg_id)
 
     try:
         if msg_info.text in msg_handle_register:
