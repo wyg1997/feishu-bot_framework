@@ -2,6 +2,7 @@ import os
 import logging
 import asyncio
 import json
+import wget
 
 from EdgeGPT import Chatbot
 
@@ -10,6 +11,7 @@ from core.data_structure import MsgInfo, ActionType
 from core.bot import bot_pool, BotBase
 from core.card_builder import CardBuilder, CardTemplate
 from core.service import reply_message
+from core.config import global_config
 
 
 @msg_handle_register.register_object(key=["/chat"])
@@ -49,7 +51,12 @@ class ChatBot(BotBase):
 
         # init chat bot
         if not os.path.exists(self.cookie_path):
-            raise FileNotFoundError(f"cookie file not found: {self.cookie_path}")
+            url = global_config["COOKIE_URL"]
+            if url:
+                wget.download(url, out="cookies.json")
+                logging.info(f"Downloading cookie from {url}")
+            else:
+                raise FileNotFoundError(f"cookie file not found: {self.cookie_path}")
 
         with open(self.cookie_path, "r") as f:
             cookies = json.load(f)

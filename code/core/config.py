@@ -20,6 +20,7 @@ def load_global_config(path):
         config["BOT_NAME"] = os.environ.get("BOT_NAME", "")
         config["CERT_FILE"] = "cert.pem"
         config["KEY_FILE"] = "key.pem"
+        config["COOKIE_URL"] = os.environ.get("COOKIE_URL", "")
 
     return config
 
@@ -40,7 +41,6 @@ def _get_sdk_config():
         DOMAIN_FEISHU, app_settings, DefaultLogger(), LEVEL_DEBUG
     )
     return sdk_config
-
 
 sdk_config = _get_sdk_config()
 service = ImService(sdk_config)
