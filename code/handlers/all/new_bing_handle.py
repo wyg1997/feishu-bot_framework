@@ -23,6 +23,7 @@ class ChatBot(BotBase):
     def __init__(self, root_id):
         super().__init__(root_id)
         self._chat_bot = None
+        # TODO: dynamic cookie path
         self.cookie_path = "cookies.json"
 
     def __del__(self):
