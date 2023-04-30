@@ -10,6 +10,7 @@ from larksuiteoapi.service.im.v1.model import MentionEvent
 class ActionType(Enum):
     chat = 1
     image = 2
+    repeat = 3
 
 
 class HandlerType(Enum):

@@ -1,15 +1,10 @@
-from typing import Callable
-
-from core.data_structure import MsgInfo
-
-
 class Register(object):
     def __init__(self, name="universal register"):
         self._name = name
-        self._handle_dict = dict()
+        self._object_dict = dict()
 
     def __len__(self):
-        return len(self._handle_dict)
+        return len(self._object_dict)
 
     def __contains__(self, key):
         return self.get(key, force=False) is not None
@@ -17,10 +12,7 @@ class Register(object):
     def __repr__(self):
         repr_str = f"{self.name} [\n"
         repr_str += ",\n".join(
-            [
-                f"{name} : {handle_func.__name__}"
-                for name, handle_func in self._handle_dict.items()
-            ]
+            [f"{name} : {obj.__name__}" for name, obj in self._object_dict.items()]
         )
         repr_str += "]\n"
 
@@ -33,26 +25,29 @@ class Register(object):
         self._name = name
 
     def keys(self):
-        return self._handle_dict.keys()
+        return self._object_dict.keys()
 
-    def get(self, key, force=True) -> Callable[[MsgInfo], None]:
+    def get(self, key, force=True):
         """
         Get the module by key. If force is True, raise KeyError when key is not found.
         """
-        if force and key not in self._handle_dict:
+        if force and key not in self._object_dict:
             raise KeyError(f"{key} is not found in {self.name}")
-        return self._handle_dict.get(key, None)
+        return self._object_dict.get(key, None)
 
-    def _register_handle(self, handle_func, keys, force=False):
+    def _register_object(self, obj, key, force=False):
         assert isinstance(
-            keys, (list, tuple)
-        ), f"keys must be list or tuple, but got {type(keys)}"
-        for key in keys:
-            if key in self._handle_dict and not force:
-                raise KeyError(f"{key} is already registered in {self.name}")
-            self._handle_dict[key] = handle_func
+            key, (list, tuple, str)
+        ), f"keys must be list or tuple or str, but got {type(key)}"
+        if isinstance(key, str):
+            key = [key]
 
-    def register_handle(self, keys, force=False, handle_func=None):
+        for key in key:
+            if key in self._object_dict and not force:
+                raise KeyError(f"{key} is already registered in {self.name}")
+            self._object_dict[key] = obj
+
+    def register_object(self, key, force=False, obj=None):
         r"""
         Register a handle function.
 
@@ -62,23 +57,24 @@ class Register(object):
         msg_handle_register = Register(name="message handle register")
         class A:
             pass
-        msg_handle_register.register_handle(keys=["A", "B"], handle_func=A)
+        msg_handle_register.register_object(keys=["A", "B"], obj=A)
 
-        @msg_handle_register.register_handle(keys=["C"])
+        @msg_handle_register.register_object(keys=["C"])
         class C:
             pass
         ```
         """
         # directly call register function
-        if handle_func is not None:
-            self._register_handle(handle_func, keys=keys, force=force)
-            return handle_func
+        if obj is not None:
+            self._register_object(obj, key=key, force=force)
+            return obj
 
-        def _register_module_wrapper(cls):
-            self._register_handle(cls, keys=keys, force=force)
+        def _register_object_wrapper(cls):
+            self._register_object(cls, key=key, force=force)
             return cls
 
-        return _register_module_wrapper
+        return _register_object_wrapper
 
 
 msg_handle_register = Register(name="message handle register")
+bot_register = Register(name="bot register")
