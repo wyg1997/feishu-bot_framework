@@ -73,6 +73,9 @@ class CardBuilder:
     def build(self) -> str:
         return json.dumps(self.card)
 
+    def dict(self) -> Dict[str, Any]:
+        return self.card
+
     def add_header(self, template: Union[str, CardTemplate], title: str):
         """
         Document:

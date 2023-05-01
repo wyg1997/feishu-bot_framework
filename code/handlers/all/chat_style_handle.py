@@ -55,6 +55,7 @@ def conversation_style_card_handle(card):
         action_dict["conversation_style"]
     ]
 
+    # reply success message
     card_builder = CardBuilder()
     card_builder.add_header(CardTemplate.green, title="设置成功")
     card_builder.add_markdown(
@@ -62,4 +63,24 @@ def conversation_style_card_handle(card):
     )
     card_builder.add_note(note_content="仅在之后的对话中生效，之前的对话不会改变哦~")
     reply_message(msg_id, card_builder.build())
-    return None
+
+    # update card
+    card_builder = CardBuilder()
+    card_builder.add_header(CardTemplate.blue, title="请选择对话风格")
+    buttons = []
+    for style in ConversationStyle:
+        buttons.append(
+            Button(
+                text=get_conversation_style_string(style),
+                url="",
+                type=Button.ButtonType.primary
+                if global_config["CONVERSATION_STYLE"] == style
+                else Button.ButtonType.default,
+                value={"conversation_style": style.name},
+            )
+        )
+    card_builder.add_button_group(buttons)
+    card_builder.add_note(
+        note_content=f"当前模式: {get_conversation_style_string(global_config['CONVERSATION_STYLE'])}"
+    )
+    return card_builder.dict()
