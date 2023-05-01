@@ -1,16 +1,18 @@
 from enum import Enum
 from dataclasses import dataclass
-from core.config import global_config
-from core.tools import parse_message_content
 from typing import List
 
 from larksuiteoapi.service.im.v1.model import MentionEvent
+
+from core.config import global_config
+from core.tools import parse_message_content
 
 
 class ActionType(Enum):
     chat = 1
     image = 2
     repeat = 3
+    chat_style = 4
 
 
 class HandlerType(Enum):
@@ -35,8 +37,8 @@ class MessageType(Enum):
 class MsgInfo(object):
     handler_type: HandlerType
     msg_type: MessageType
-    msg_id: int
-    root_id: int
+    msg_id: str
+    root_id: str
     text: str
     is_mentioned: bool  # or all mentioned users name
     # TODO: add more properties

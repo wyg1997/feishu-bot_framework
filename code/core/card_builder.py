@@ -1,6 +1,7 @@
 import enum
 import json
-from typing import Any, Dict, Union
+from dataclasses import dataclass, field
+from typing import Any, Dict, Union, Tuple
 
 
 class CardTemplate(enum.Enum):
@@ -16,6 +17,51 @@ class CardTemplate(enum.Enum):
     indigo = 10
     gray = 11
     default = 12
+
+
+@dataclass(frozen=True)
+class Button:
+    """
+    Document:
+        https://open.feishu.cn/document/ukTMukTMukTM/uEzNwUjLxcDM14SM3ATN
+    """
+
+    class ButtonType(enum.Enum):
+        primary = 1
+        default = 2
+        danger = 3
+
+    text: str
+    url: str = ""
+    type: ButtonType = ButtonType.default
+    android_url: str = ""
+    ios_url: str = ""
+    pc_url: str = ""
+    value: Union[None, Dict[str, Any]] = field(default=None)
+    # set confirm windows title and text
+    confirm: Union[None, Tuple[str, str]] = None
+
+    def to_dict(self):
+        data = {
+            "tag": "button",
+            "text": {"tag": "plain_text", "content": self.text},
+            "type": self.type.name,
+        }
+        if self.value is not None:
+            data["value"] = self.value
+        if any([self.url, self.android_url, self.ios_url, self.pc_url]):
+            data["multi_url"] = {
+                "url": self.url,
+                "android_url": self.android_url,
+                "ios_url": self.ios_url,
+                "pc_url": self.pc_url,
+            }
+        if self.confirm is not None:
+            data["confirm"] = {
+                "title": {"tag": "plain_text", "content": self.confirm[0]},
+                "text": {"tag": "plain_text", "content": self.confirm[1]},
+            }
+        return data
 
 
 # NOTE: See document:
@@ -140,6 +186,26 @@ class CardBuilder:
                         "content": note_content,
                     },
                 ],
+            }
+        )
+        return self
+
+    def add_button_group(self, buttons, *, layout="default"):
+        assert layout in (
+            "default",
+            "bisected",
+            "trisection",
+            "flow",
+        ), f'layout must be one of "default", "bisected", "trisection", "flow", but got {layout}'
+
+        if "elements" not in self.card:
+            self.card["elements"] = []
+
+        self.card["elements"].append(
+            {
+                "tag": "action",
+                "actions": [button.to_dict() for button in buttons],
+                "layout": layout,
             }
         )
         return self

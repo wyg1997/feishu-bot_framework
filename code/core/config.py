@@ -2,6 +2,7 @@ import os
 import yaml
 import logging
 
+from EdgeGPT import ConversationStyle
 from larksuiteoapi import Config, DOMAIN_FEISHU, DefaultLogger, LEVEL_DEBUG
 from larksuiteoapi.service.im.v1 import Service as ImService
 
@@ -22,6 +23,7 @@ def load_global_config(path):
         config["KEY_FILE"] = "key.pem"
         config["COOKIE_URL"] = os.environ.get("COOKIE_URL", "")
         config["CONVERSATION_STYLE"] = "balanced"
+    config["CONVERSATION_STYLE"] = ConversationStyle[config["CONVERSATION_STYLE"]]
 
     return config
 

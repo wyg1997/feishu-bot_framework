@@ -13,6 +13,7 @@ from core.bot import bot_pool, BotBase
 from core.card_builder import CardBuilder, CardTemplate
 from core.service import reply_message
 from core.config import global_config
+from core.tools import get_conversation_style_string
 
 
 def _remove_message_reference_charactor(msg: str) -> str:
@@ -33,9 +34,7 @@ class ChatBot(BotBase):
         self._chat_bot = None
         # TODO: dynamic cookie path
         self.cookie_path = "cookies.json"
-        self._conversation_style = ConversationStyle[
-            global_config["CONVERSATION_STYLE"]
-        ]
+        self._conversation_style = global_config["CONVERSATION_STYLE"]
 
     def __del__(self):
         if self._chat_bot is not None:
@@ -53,12 +52,14 @@ class ChatBot(BotBase):
         card_builder = (
             CardBuilder()
             .add_markdown(reply_text)
-            .add_note(note_content=f"当前对话模式: {self._conversation_style.name}")
+            .add_note(
+                note_content=f"当前对话模式: {get_conversation_style_string(self._conversation_style)}"
+            )
         )
         # first message, add header
         if len(self.message_ids) == 1:
             card_builder.add_header(CardTemplate.wathet, "🥳 新话题已创建，进入卡片可连续对话")
-        reply_message(msg_info, content=card_builder.build())
+        reply_message(msg_info.msg_id, content=card_builder.build())
 
     def _get_chat_bot(self) -> Chatbot:
         if self._chat_bot is not None:
