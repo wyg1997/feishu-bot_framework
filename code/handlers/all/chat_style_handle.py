@@ -58,4 +58,4 @@ def conversation_style_card_handle(card):
     reply_message(msg_id, card_builder.build())
 
     # update card
-    return _get_chat_style_card.dict()
+    return _get_chat_style_card().dict()
