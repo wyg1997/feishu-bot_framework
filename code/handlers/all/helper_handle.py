@@ -10,4 +10,4 @@ from core.card_builder import CardBuilder, CardTemplate
 def helper_handle(msg_info: MsgInfo):
     logging.info(f"helper_handle, msg_info: {msg_info}")
     card_builder = CardBuilder().add_markdown("🤖️ 我是必应，有问题直接@我对话哦~")
-    reply_message(msg_info, content=card_builder.build())
+    reply_message(msg_info.msg_id, content=card_builder.build())

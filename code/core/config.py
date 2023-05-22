@@ -2,6 +2,7 @@ import os
 import yaml
 import logging
 
+from EdgeGPT import ConversationStyle
 from larksuiteoapi import Config, DOMAIN_FEISHU, DefaultLogger, LEVEL_DEBUG
 from larksuiteoapi.service.im.v1 import Service as ImService
 
@@ -12,7 +13,7 @@ def load_global_config(path):
             config = yaml.safe_load(f)
     else:
         config = dict()
-        config["APP_ID"] = os.environ.get('APP_ID')
+        config["APP_ID"] = os.environ.get("APP_ID")
         config["APP_SECRET"] = os.environ.get("APP_SECRET")
         config["APP_VERIFICATION_TOKEN"] = os.environ.get("APP_VERIFICATION_TOKEN")
         config["APP_ENCRYPT_KEY"] = os.environ.get("APP_ENCRYPT_KEY")
@@ -21,6 +22,8 @@ def load_global_config(path):
         config["CERT_FILE"] = "cert.pem"
         config["KEY_FILE"] = "key.pem"
         config["COOKIE_URL"] = os.environ.get("COOKIE_URL", "")
+        config["CONVERSATION_STYLE"] = "balanced"
+    config["CONVERSATION_STYLE"] = ConversationStyle[config["CONVERSATION_STYLE"]]
 
     return config
 
@@ -41,6 +44,7 @@ def _get_sdk_config():
         DOMAIN_FEISHU, app_settings, DefaultLogger(), LEVEL_DEBUG
     )
     return sdk_config
+
 
 sdk_config = _get_sdk_config()
 service = ImService(sdk_config)

@@ -24,4 +24,4 @@ class RepeatBot(BotBase):
             )
         else:
             card_builder.add_markdown(msg_info.text)
-        reply_message(msg_info, card_builder.build())
+        reply_message(msg_info.msg_id, card_builder.build())

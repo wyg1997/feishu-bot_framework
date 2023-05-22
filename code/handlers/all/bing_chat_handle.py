@@ -4,7 +4,8 @@ import asyncio
 import json
 import wget
 
-from EdgeGPT import Chatbot
+import regex
+from EdgeGPT import Chatbot, ConversationStyle
 
 from handlers import msg_handle_register, bot_register
 from core.data_structure import MsgInfo, ActionType
@@ -12,11 +13,17 @@ from core.bot import bot_pool, BotBase
 from core.card_builder import CardBuilder, CardTemplate
 from core.service import reply_message
 from core.config import global_config
+from core.tools import get_conversation_style_string
+
+
+def _remove_message_reference_charactor(msg: str) -> str:
+    # remove bing reference charactors
+    return regex.sub(r"\[\^\d+\^\]", "", msg)
 
 
 @msg_handle_register.register_object(key=["/chat"])
-def new_bing_handle(msg_info: MsgInfo):
-    logging.info(f"new_bing_handle, msg_info: {msg_info}")
+def bing_chat_handle(msg_info: MsgInfo):
+    logging.info(f"bing_chat_handle, msg_info: {msg_info}")
     bot_pool.ask(msg_info, ActionType.chat)
 
 
@@ -27,6 +34,7 @@ class ChatBot(BotBase):
         self._chat_bot = None
         # TODO: dynamic cookie path
         self.cookie_path = "cookies.json"
+        self._conversation_style = global_config["CONVERSATION_STYLE"]
 
     def __del__(self):
         if self._chat_bot is not None:
@@ -39,11 +47,19 @@ class ChatBot(BotBase):
 
         # reply message
         logging.info(f"chat reply: {reply}")
-        card_builder = CardBuilder().add_markdown(reply["item"]["messages"][-1]["text"])
+        reply_text = reply["item"]["messages"][-1]["text"]
+        reply_text = _remove_message_reference_charactor(reply_text)
+        card_builder = (
+            CardBuilder()
+            .add_markdown(reply_text)
+            .add_note(
+                note_content=f"当前对话模式: {get_conversation_style_string(self._conversation_style)}"
+            )
+        )
         # first message, add header
         if len(self.message_ids) == 1:
             card_builder.add_header(CardTemplate.wathet, "🥳 新话题已创建，进入卡片可连续对话")
-        reply_message(msg_info, content=card_builder.build())
+        reply_message(msg_info.msg_id, content=card_builder.build())
 
     def _get_chat_bot(self) -> Chatbot:
         if self._chat_bot is not None:

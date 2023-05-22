@@ -13,9 +13,6 @@ class BotBase(ABC):
         self._timestamp = time.time()
         self._message_ids = set()
 
-    def __del__(self):
-        logging.info(f"Bot {self.root_id} is deleted")
-
     @property
     def root_id(self):
         return self.root_id
